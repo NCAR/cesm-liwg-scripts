@@ -4,6 +4,4 @@ Various scripts belonging to this document where I compare different ice masks: 
 
 Each folder contains its own README with UNIX instructions on to apply the analysis.
 
-I did not upload the RACMO masks but they are available on Yellowstone: 
-
-   /glade/u/home/lvank/work/racmo/
+I did not upload the RACMO masks but they are available on Yellowstone: `/glade/u/home/lvank/work/racmo/`
