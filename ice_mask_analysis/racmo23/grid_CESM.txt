@@ -1,0 +1,16 @@
+# gridID 3
+#
+gridtype  = lonlat
+gridsize  = 55296
+xname     = lon
+xlongname = coordinate longitude
+xunits    = degrees_east
+yname     = lat
+ylongname = coordinate latitude
+yunits    = degrees_north
+xsize     = 288
+ysize     = 192
+xfirst    = 0
+xinc      = 1.25
+yfirst    = -90
+yinc      = 0.942406

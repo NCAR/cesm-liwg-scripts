@@ -1,0 +1,17 @@
+
+# HISTORY_FILE : area, PCT_LANDUNIT and ICE_MASK taken from a BG history file 
+HISTORY_FILE=masks_clm_cesm16.nc
+
+# How to create a CESM ice mask based on PCT_LANDUNIT(4)
+cdo gtc,0 -select,name=ICE_MASK $HISTORY_FILE greenland.nc
+cdo mul greenland.nc -select,level=4,timestep=1 -select,name=PCT_LANDUNIT $HISTORY_FILE tmp.nc
+ncwa -a time tmp.nc CESM_ICE_1DEG.nc
+cdo fldsum -mul -select,name=area $HISTORY_FILE CESM_ICE_1DEG.nc out.nc
+ncdump out.nc
+
+# How to create a CESM ice mask based on PCT_LANDUNIT(4)
+# with 50% threshold applied to produce binary mask
+cdo mul greenland.nc -gec,50 -select,level=4 -select,name=PCT_LANDUNIT $HISTORY_FILE tmp.nc
+ncwa -a time tmp.nc CESM_ICE_1DEG_50pct.nc
+cdo fldsum -mul -select,name=area $HISTORY_FILE CESM_ICE_1DEG_50pct.nc out.nc
+ncdump out.nc

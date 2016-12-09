@@ -1,0 +1,7 @@
+
+
+# remap RACMO ice mask to CESM resolution
+cdo setgrid,grid_ZGRN11.txt -select,name=GrIS_mask RACMO23_masks_ZGRN11.nc tmp.nc
+cdo remapbil,grid_CESM.txt tmp.nc RACMO23_ICE_1DEG.nc
+
+#cdo -fldsum -mul -select,name=GrIS_mask RACMO23_masks_ZGRN11.nc -select,name=gridarea RACMO23_masks_ZGRN11.nc out.nc
