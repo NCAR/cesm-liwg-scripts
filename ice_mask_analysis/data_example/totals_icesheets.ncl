@@ -31,10 +31,13 @@ mask_cesm16 = fid_cesm16->ICE_MASK(:,:)/100.
 fid_cesm20 = addfile("../cesm_4km/CESM_ICE_1DEG.nc","r")
 mask_cesm20 = fid_cesm20->ICE_MASK(:,:)/100.
 
-fid_racmo23 = addfile("../racmo23/RACMO23_ICE_1DEG.nc","r") 
+;fid_racmo23 = addfile("../racmo23/RACMO23_ICE_1DEG.nc","r") 
+;fid_racmo23 = addfile("../racmo23/gismask_RACMO23_0.9x1.25_bil.nc","r")
+fid_racmo23 = addfile("../racmo23/gismask_RACMO23_0.9x1.25_con.nc","r")
 mask_rac23 = fid_racmo23->GrIS_mask(:,:) 
 
-fid_racmo24 = addfile("../racmo24/RACMO24_ICE_1DEG.nc","r") 
+;fid_racmo24 = addfile("../racmo24/RACMO24_ICE_1DEG.nc","r") 
+fid_racmo24 = addfile("../racmo24/gismask_RACMO24_0.9x1.25_con.nc","r")
 mask_rac24 = fid_racmo24->Promicemask(:,:) 
 
 fid_area = addfile("area.nc","r")
@@ -69,8 +72,9 @@ do i = 1, 4, 1
    print("GIS area = "+sprintf("%8.2f",gis_area)+" km^2")
    gis_rain=sum(rain*gis_mul_area)*fac
    gis_snow=sum(snow*gis_mul_area)*fac
-   print("rain = "+gis_rain + " Gt")
    print("snow = "+gis_snow + " Gt")
+   print("rain = "+gis_rain + " Gt")
+   print("total = "+(gis_rain+gis_snow)+" Gt")
 end do
 
 end

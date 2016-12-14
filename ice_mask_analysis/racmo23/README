@@ -1,7 +1,40 @@
 
+# Note to self: 
+# SHOULD NOT USE GRID_CESM.TXT ANYMORE!!
+# This yields the wrong latitude array. More info: https://code.zmaw.de/issues/7436
 
-# remap RACMO ice mask to CESM resolution
+# Use area file as the CESM grid definition:
+ncks -v area ../cesm_4km/masks_clm_cesm20.nc area.nc
+
+# ------------------
+# remap RACMO ice mask to CESM resolution: bilinear
+# ------------------
 cdo setgrid,grid_ZGRN11.txt -select,name=GrIS_mask RACMO23_masks_ZGRN11.nc tmp.nc
-cdo remapbil,grid_CESM.txt tmp.nc RACMO23_ICE_1DEG.nc
+cdo remapbil,area.nc tmp.nc RACMO23_ICE_1DEG.nc
+cdo setmisstoc,0 RACMO23_ICE_1DEG.nc gismask_RACMO23_0.9x1.25_bil.nc
 
-#cdo -fldsum -mul -select,name=GrIS_mask RACMO23_masks_ZGRN11.nc -select,name=gridarea RACMO23_masks_ZGRN11.nc out.nc
+# ------------------
+# remap RACMO ice mask to CESM resolution: conservative
+# ------------------
+# Alternative 1:
+# due to a bug in CDO we have to swap xinc=-0.1 to xinc=0.1 in the grid description
+# more info here: https://code.zmaw.de/issues/7434
+cdo setgrid,grid_ZGRN11.txt -select,name=GrIS_mask RACMO23_masks_ZGRN11.nc tmp.nc
+cdo remapnn,grid_ZGRN11_xpos.txt tmp.nc xpos.nc 
+cdo setmisstoc,0 -remapcon,area.nc xpos.nc gismask_RACMO23_0.9x1.25_con.nc
+
+# ------------------
+# Alternative 2:
+# Regrid RACMO 11 km rotated lon/lat to global regular 5' grid, then do conservative regrid to 1 degree
+cdo const,0,r4320x2160 5min.nc
+cdo remapbil,5min.nc tmp.nc racmo5min.nc
+cdo setmisstoc,0 racmo5min.nc racmo5min_filled.nc
+cdo remapcon,grid_CESM.txt racmo5min_filled.nc gismask_RACMO23_0.9x1.25_con.nc
+
+# ------------------
+# Alternative 3:
+# Regrid RACMO 11 km rotated lon/lat to global regular 2.5' grid
+cdo const,0,r8640x4320 2min.nc
+cdo remapbil,2min.nc tmp.nc racmo2min.nc
+cdo setmisstoc,0 racmo2min.nc racmo2min_filled.nc
+cdo remapcon,grid_CESM.txt racmo2min_filled.nc gismask_RACMO23_0.9x1.25_con.nc

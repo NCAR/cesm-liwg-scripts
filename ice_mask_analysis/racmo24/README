@@ -1,11 +1,13 @@
 
 # RACMO23_masks_ZGRN11.nc
-#    file made by Brice to do calculations on a smaller Greenland ice sheet
+#    file made by Brice Noel to do calculations on a smaller Greenland ice sheet
 #    the GrIS mask has been replaced by Promice
 # 
 # FGRN11z_Masks.nc
 #    new masks for RACMO 2.4 based on PromICE
 
+# Use area file as the grid definition:
+ncks -v area ../cesm_4km/masks_clm_cesm20.nc area.nc
 
 # Area extent of connected GIS:
 cdo eqc,2 -select,name=Promicemask FGRN11z_Masks.nc gis.nc
@@ -15,11 +17,15 @@ cdo fldsum -mul -select,name=gridarea FGRN11z_Masks.nc gis.nc outf2.nc
 cdo -sub -select,name=GrIS_caps_mask FGRN11z_Masks.nc -eqc,2 -select,name=Promicemask FGRN11z_Masks.nc gic.nc
 cdo fldsum -mul -select,name=gridarea FGRN11z_Masks.nc gic.nc outf3.nc
    
-
 # Remapping of GIS ice mask to CESM grid (bilinear)
 cdo setgrid,grid_ZGRN11.txt -eqc,2 -select,name=Promicemask FGRN11z_Masks.nc tmp.nc
-cdo remapbil,grid_CESM.txt tmp.nc RACMO24_ICE_1DEG.nc
+cdo remapbil,area.nc tmp.nc RACMO24_ICE_1DEG.nc
+cdo setmisstoc,0 RACMO24_ICE_1DEG.nc gismask_RACMO24_0.9x1.25_bil.nc
 
-# Remapping of GIS ice mask to CESM grid (bilinear)
+# remap RACMO ice mask to CESM resolution: conservative
+# due to a bug in CDO we have to swap xinc=-0.1 to xinc=0.1 in the grid description
+# more info here: https://code.zmaw.de/issues/7434
 cdo setgrid,grid_ZGRN11.txt -eqc,2 -select,name=Promicemask FGRN11z_Masks.nc tmp.nc
-cdo remapcon2,grid_CESM.txt tmp.nc RACMO24_ICE_1DEG_CON.nc
+cdo remapnn,grid_ZGRN11_xpos.txt tmp.nc xpos.nc 
+cdo setmisstoc,0 -remapcon,area.nc xpos.nc gismask_RACMO24_0.9x1.25_con.nc
+

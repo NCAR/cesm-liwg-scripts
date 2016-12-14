@@ -40,11 +40,20 @@ def main():
 
    filename = 'racmo23/RACMO23_ICE_1DEG.nc'
    with Dataset(filename, mode='r') as fid:
-      mask_rac23 = fid.variables['GrIS_mask'][:,:] * 100.
+      mask_rac23_bil = fid.variables['GrIS_mask'][:,:] * 100.
+
+   filename = 'racmo23/RACMO23_ICE_1DEG_con.nc'
+   with Dataset(filename, mode='r') as fid:
+      mask_rac23_con = fid.variables['GrIS_mask'][:,:] * 100.
 
    filename = 'racmo24/RACMO24_ICE_1DEG.nc'
    with Dataset(filename, mode='r') as fid:
-      mask_rac24 = fid.variables['Promicemask'][:,:] * 100.
+      mask_rac24_bil = fid.variables['Promicemask'][:,:] * 100.
+
+   filename = 'racmo24/RACMO24_ICE_1DEG_con.nc'
+   with Dataset(filename, mode='r') as fid:
+      mask_rac24_con = fid.variables['Promicemask'][:,:] * 100.
+
 
    lons2d, lats2d = np.meshgrid(lons, lats)
 
@@ -54,34 +63,48 @@ def main():
    
    clevs=np.arange(0,110,10)
    #cs = m.contourf(x,y,mask4km,clevs,cmap='magma')
+   #cs = m.pcolormesh(x,y,mask4km,cmap='magma_r')
 
-   ax = plt.subplot(221)
+   ax = plt.subplot(321)
    m = setup_map_greenland(ax)
    x, y = m(lons2d, lats2d) # compute map proj coordinates.
-   #cs = m.pcolormesh(x,y,mask4km,cmap='magma_r')
-   cs = m.contourf(x,y,mask4km,cmap='magma_r',levels=clevs)
-   ax.set_title('CESM 2.0 (off 4 km)')
-   cbar = m.colorbar(cs,location='right',pad="5%")
-   cbar.set_label("Percent ice sheet")
-
-   ax = plt.subplot(222)
-   m = setup_map_greenland(ax)
    cs = m.contourf(x,y,mask5km,cmap='magma_r',levels=clevs)
    ax.set_title('CESM 1.6 (off 5 km)')
    cbar = m.colorbar(cs,location='right',pad="5%")
    cbar.set_label("Percent ice sheet")
 
-   ax = plt.subplot(223)
+   ax = plt.subplot(322)
    m = setup_map_greenland(ax)
-   cs = m.contourf(x,y,mask_rac23,cmap='magma_r',levels=clevs)
-   ax.set_title('RACMO 2.3')
+   cs = m.contourf(x,y,mask4km,cmap='magma_r',levels=clevs)
+   ax.set_title('CESM 2.0 (off 4 km)')
    cbar = m.colorbar(cs,location='right',pad="5%")
    cbar.set_label("Percent ice sheet")
 
-   ax = plt.subplot(224)
+   ax = plt.subplot(323)
    m = setup_map_greenland(ax)
-   cs = m.contourf(x,y,mask_rac24,cmap='magma_r',levels=clevs)
-   ax.set_title('RACMO 2.4')
+   cs = m.contourf(x,y,mask_rac23_bil,cmap='magma_r',levels=clevs)
+   ax.set_title('RACMO 2.3 bil')
+   cbar = m.colorbar(cs,location='right',pad="5%")
+   cbar.set_label("Percent ice sheet")
+
+   ax = plt.subplot(324)
+   m = setup_map_greenland(ax)
+   cs = m.contourf(x,y,mask_rac23_con,cmap='magma_r',levels=clevs)
+   ax.set_title('RACMO 2.3 con')
+   cbar = m.colorbar(cs,location='right',pad="5%")
+   cbar.set_label("Percent ice sheet")
+
+   ax = plt.subplot(325)
+   m = setup_map_greenland(ax)
+   cs = m.contourf(x,y,mask_rac24_bil,cmap='magma_r',levels=clevs)
+   ax.set_title('RACMO 2.4 bil')
+   cbar = m.colorbar(cs,location='right',pad="5%")
+   cbar.set_label("Percent ice sheet")
+
+   ax = plt.subplot(326)
+   m = setup_map_greenland(ax)
+   cs = m.contourf(x,y,mask_rac24_con,cmap='magma_r',levels=clevs)
+   ax.set_title('RACMO 2.4 con')
    cbar = m.colorbar(cs,location='right',pad="5%")
    cbar.set_label("Percent ice sheet")
 
@@ -94,14 +117,27 @@ def main():
    m = setup_map_greenland(ax)
    clevs=np.arange(-100,110,10)
    #cs = m.pcolormesh(x,y,mask5km-mask_rac23,cmap='bwr',levels=clevs)
-   cs = m.contourf(x,y,mask5km-mask_rac23,cmap='bwr',levels=clevs)
-   ax.set_title('CESM 1.6 - RACMO2.3')
+   cs = m.contourf(x,y,mask5km-mask_rac23_bil,cmap='bwr',levels=clevs)
+   ax.set_title('CESM 1.6 - RACMO2.3 con')
    cbar = m.colorbar(cs,location='right',pad="5%")
    cbar.set_label("Percent ice sheet")
 
    pp.savefig(fig,dpi=300)
-   #plt.savefig('masks.pdf',dpi=300)
    plt.savefig('cesm16_sub_racmo23.png',dpi=300)
+
+   fig = plt.figure(figsize=A4_size)
+   ax = plt.subplot(111)
+   m = setup_map_greenland(ax)
+   clevs=np.arange(-100,110,10)
+   #cs = m.pcolormesh(x,y,mask5km-mask_rac23_con,cmap='bwr',levels=clevs)
+   cs = m.contourf(x,y,mask_rac23_con-mask_rac23_bil,cmap='bwr',levels=clevs)
+   ax.set_title('RACMO2.3 con - RACMO2.3 bil')
+   cbar = m.colorbar(cs,location='right',pad="5%")
+   cbar.set_label("Percent ice sheet")
+
+   pp.savefig(fig,dpi=300)
+   plt.savefig('racmo23_con_sub_bil.png',dpi=300)
+
    pp.close()
 
 
