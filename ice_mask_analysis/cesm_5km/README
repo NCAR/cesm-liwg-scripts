@@ -15,3 +15,12 @@ cdo mul greenland.nc -gec,50 -select,level=4 -select,name=PCT_LANDUNIT $HISTORY_
 ncwa -a time tmp.nc CESM_ICE_1DEG_50pct.nc
 cdo fldsum -mul -select,name=area $HISTORY_FILE CESM_ICE_1DEG_50pct.nc out.nc
 ncdump out.nc
+
+# Antarctic CESM ice mask based on PCT_LANDUNIT(4)
+cdo setclonlatbox,0,0,360,0,90 -select,level=4,timestep=1 -select,name=PCT_LANDUNIT $HISTORY_FILE tmp.nc
+ncwa -a time tmp.nc tmp2.nc
+ncwa -a lev tmp2.nc ANT_CESM_ICE_1DEG.nc
+ncrename -O -v PCT_LANDUNIT,ICE_MASK ANT_CESM_ICE_1DEG.nc
+cdo fldsum -mul -select,name=area $HISTORY_FILE ANT_CESM_ICE_1DEG.nc out.nc
+ncdump out.nc
+
