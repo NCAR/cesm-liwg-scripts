@@ -1,0 +1,16 @@
+gridtype  = lonlat
+gridsize  = 95472
+xname     = rlon
+xlongname = longitude in rotated grid
+xunits    = degrees
+yname     = rlat
+ylongname = latitude in rotated grid
+yunits    = degrees
+xsize     = 306
+ysize     = 312
+xfirst    = -13.15
+xinc      = 0.1
+yfirst    = 15.8
+yinc      = -0.1
+xnpole    = -37.5 
+ynpole    = -18.0
