@@ -1,0 +1,26 @@
+#!/bin/bash
+
+alias cdo='/glade/u/home/lvank/bin/cdo-1.8.2/src/cdo'
+FILES="
+gridded3d_EFLX_LH_TOT_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FGR_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FIRA_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FIRE_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FSA_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FSH_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FSM_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_FSR_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_QRUNOFF_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_QSNOFRZ_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_QSNOMELT_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_QSOIL_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_RAIN_REPARTITIONED_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_SNOW_REPARTITIONED_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_TG_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc
+gridded3d_U10_b.e20.BHIST.f09_g17.20thC.190_ramp204_reset.002_1961-1990_ymonmean.nc"
+
+for FILE in $FILES; do
+   NEWFILE=$(echo $FILE | sed 's/ymonmean/ymonmean_racmo/')
+   echo $NEWFILE 
+   cdo remapnn,grid_ZGRN11_new_CDO_1.8.txt $FILE $NEWFILE
+done
